@@ -19,15 +19,30 @@ vim .chef/knife.rb
  
     change maintainer, maintainer email //if required
     
-    Add in metadata.rb
+  Add in metadata.rb
     
     depends 'apt' //optional
     
     cd my_cookbook/recipes
     vim default.rb
-    ----------------------------------------------------------------------------------------------
-    
-    
+------    ----------------------------------------------------------------------------------------------
+include_recipe "apt"
+
+package 'nginx' do
+  action :install
+end
+
+service 'nginx' do
+  action [:start, :enable]
+end
+
+file '/usr/share/nginx/html/index.html' do
+  content '<html>
+  <body>
+    <h1>hello world</h1>
+  </body>
+</html>'
+end
     
     
     
