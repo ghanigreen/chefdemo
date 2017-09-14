@@ -1,0 +1,81 @@
+ls /vagrant/
+
+sudo -s
+dpkg -i /vagrant/chefdk_0.9.0-1_amd64.deb
+
+
+mkdir .chef
+vim .chef/knife.rb
+    
+      cookbook_path ['/home/vagrant/cookbooks']
+ 
+ mkdir cookbooks
+ cd cookbooks
+ 
+      chef generate cookbook my_cookbook
+    
+ ls my_cookbook/
+ vim my_cookbook/metadata.rb
+ 
+    change maintainer, maintainer email //if required
+    
+    Add in metadata.rb
+    
+    depends 'apt' //optional
+    
+    cd my_cookbook/recipes
+    vim default.rb
+    ----------------------------------------------------------------------------------------------
+    
+    
+    
+    
+    
+    
+    --------------------------------------------------------------------------------------------
+    
+    sudo chef-client -z --runlist 'recipe[my_cookbook]'
+    
+    ls
+    cd my_cookbook/
+    
+    berks init
+    berks install
+    
+    ls ~/.berkshelf/cookbooks/apt-2.9.2/
+    berks vendor
+    
+    ls berks-cookbooks/
+    mv berks-cookbooks/apt/ ..
+    cd ..
+    ls
+    
+    cat ~/.chef/knife.rb
+    
+    sudo chef-client -z --runlist 'recipe[my_cookbook]'
+    
+    curl localhost
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+ 
+ 
+ 
+  
+
+
