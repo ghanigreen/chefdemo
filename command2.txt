@@ -1,0 +1,56 @@
+mkdir chef-repo
+cd chef-repo
+
+ls
+receipe
+
+vim hello.rb
+
+file 'sample' do
+ content 'hello world'
+  end
+
+  chef-apply hello.rb
+
+  vim sample
+
+  file 'sample' do
+ 		action :delete
+  end
+
+ -------------
+
+ vim hello.rb
+
+ package 'apache2' 
+ service 'apache2' do
+ 		action [:enable, :start]
+ end
+
+file '/var/www/html/index.html' do
+		content '<html>
+		<body>
+			<h1>Hello World!</h1>
+			</body>
+	</html>'
+end
+
+chef-apply hello.rb
+
+ping google.com
+
+apt-get update
+
+chef-apply hello.rb
+
+service apache2 start
+
+netstat -tulpno | grep :80
+chef-server-ctl --help
+chef-server-ctl --stop
+
+chef-apply hello.rb
+
+ifconfig
+
+curl localhost
