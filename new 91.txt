@@ -3,7 +3,7 @@ sudo ntpdate -u 0.ubuntu.pool.ntp.org
 
 
 timedatectl list-timezones
-sudo timedatectl set-timezone Europe/London
+sudo timedatectl set-timezone Asia/Kolkata
 
 
 cd /tmp
