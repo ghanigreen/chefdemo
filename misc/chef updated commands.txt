@@ -6,17 +6,17 @@ Second step
 vagrant init ubuntu/trusty64 
 Replace with below commands in vagrant file
 
-Vagrant.configure(2) do |config|
-   config.vm.define "workstation" do |workstation|
-    workstation.vm.box = "ubuntu/trusty64"
-    workstation.vm.network "private_network", ip: "192.168.0.252"
-    workstation.vm.hostname = "workstation.example.com"
+Vagrant.configure("2") do |config|
+   config.vm.define "developmentkit" do |developmentkit|
+   developmentkit.vm.box = "ubuntu/trusty64"
+    developmentkit.vm.network "private_network", ip: "192.168.0.252"
+    developmentkit.vm.hostname = "developmentkit.example.com"
   end
-    config.vm.define "chef" do |chef|
-    chef.vm.box = "ubuntu/trusty64"
-    chef.vm.network "private_network", ip: "192.168.0.253"
-    chef.vm.hostname = "chef.example.com"
-    chef.vm.provider "virtualbox" do |v|
+    config.vm.define "chefserver" do |chefserver|
+    chefserver.vm.box = "ubuntu/trusty64"
+    chefserver.vm.network "private_network", ip: "192.168.0.253"
+    chefserver.vm.hostname = "chefserver.example.com"
+    chefserver.vm.provider "virtualbox" do |v|
       v.memory = 4096
       v.cpus = 2
     end
@@ -35,7 +35,7 @@ paste the chef developmentkit and chef server of ubuntu in vagrant folder
 
 Fourth Step //Type below commands
 
-Vegrant ssh workstation
+Vegrant ssh developmentkit
 
 Ls  /vagrant/
 sudo dpkg -i /vagrant/chefdk_0.9.0-1_amd64.deb
@@ -52,40 +52,42 @@ cd my_cookbook/recipes
 vim default.rb
 
 // In default.rb
-file 'hello.txt' do
+file '/tmp/hello.txt' do
  content 'hello world'
   end	
 
-sudo chef-client -z --runlist 'recipe[my_cookbook]  //to verify my_cookbook is working or not
+sudo chef-client -z --runlist 'recipe[my_cookbook]'  //to verify my_cookbook is working or not
 exit
 
 
 Fifth step 
 
-// go to root user of workstation
+// go to root user of developmentkit
 sudo -s
 ls /etc
 vi hosts
 
 //add these three lines in hosts file
-192.168.0.253 chef.example.com chef
-192.168.0.252 workstation.example.com workstation
+192.168.0.253 chefserver.example.com chefserver
+192.168.0.252 developmentkit.example.com developmentkit
 192.168.0.3 node.example.com node
+
+
 
 //save it by using escape :wq
 exit
 
 Sixth Step
 
-vagrant ssh chef
+vagrant ssh chefserver
 sudo -s
 ls /etc
 vi hosts
 
 //add these three lines in hosts file
 
-192.168.0.253 chef.example.com chef
-192.168.0.252 workstation.example.com workstation
+192.168.0.253 chefserver.example.com chefserver
+192.168.0.252 developmentkit.example.com developmentkit
 192.168.0.3 node.example.com node
 //save it by using escape :wq
 ping node // to verify node is connected to server - stop using ctrl+c
@@ -101,8 +103,8 @@ vi hosts
 
 //add these three lines in hosts file
 
-192.168.0.253 chef.example.com chef
-192.168.0.252 workstation.example.com workstation
+192.168.0.253 chefserver.example.com chefserver
+192.168.0.252 developmentkit.example.com developmentkit
 192.168.0.3 node.example.com node
 
 //save it by using escape :wq
@@ -110,22 +112,23 @@ exit
 
 Eighth Step
 
-vagrant ssh chef
+vagrant ssh chefserver
 sudo -s
 ls /vagrant/
 dpkg -i /vagrant/chef-server-core_XXXXXXXX.deb //install chef server software in chef server
 
 chef-server-ctl reconfigure
 chef-server-ctl user-create admin admin admin admin@example.com LearnDevops -f admin.pem
-chef-server-ctl org-create learndevops "Learn Devops Course" --association_user admin 
+chef-server-ctl org-create learndevops "Learn Devops Course" --association_user admin -f org.pem
 
 cp admin.pem org.pem /vagrant
 exit
 
 Ninth Step
 
-vagrant ssh workstation
+vagrant ssh developmentkit
 cp /vagrant/*.pem .
+
 ls
 vim .chef/knife.rb
 
@@ -136,14 +139,14 @@ log_level                :info
 log_location             STDOUT
 node_name                "admin"
 client_key               "/home/vagrant/admin.pem"
-chef_server_url          "https://chef.example.com/organizations/learndevops"
+chef_server_url          "https://chefserver.example.com/organizations/learndevops"
 cookbook_path            ["/home/vagrant/cookbooks"]
 
 cat .chef/knife.rb // to display all above commands - to verify
 
 knife ssl fetch
 knife client list // it will shows learndevops-validator
-knife bootstrap node.example.com -N node -X vagrant --sudo
+knife bootstrap node.example.com -N node -x vagrant --sudo
 
 // it will ask vagrant password - enter "vagrant"
 
