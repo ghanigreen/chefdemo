@@ -35,12 +35,13 @@ paste the chef developmentkit and chef server of ubuntu in vagrant folder
 
 Fourth Step //Type below commands
 
-Vegrant ssh developmentkit
+vagrant ssh developmentkit
 
-Ls  /vagrant/
+ls  /vagrant
 sudo dpkg -i /vagrant/chefdk_0.9.0-1_amd64.deb
+
 mkdir .chef
-vim .chef/knife.rb
+vi .chef/knife.rb
    
       cookbook_path ['/home/vagrant/cookbooks']  //In knife.rb
  
@@ -49,7 +50,7 @@ cd cookbooks
 chef generate cookbook my_cookbook 
 ls my_cookbook/  
 cd my_cookbook/recipes
-vim default.rb
+vi default.rb
 
 // In default.rb
 file '/tmp/hello.txt' do
@@ -78,7 +79,7 @@ vi hosts
 exit
 
 Sixth Step
-
+//chefserver
 vagrant ssh chefserver
 sudo -s
 ls /etc
@@ -95,7 +96,7 @@ exit
 
 
 Seventh Step
-
+//node machine
 vagrant ssh node
 sudo -s
 ls /etc
@@ -111,6 +112,7 @@ vi hosts
 exit
 
 Eighth Step
+//chefserver
 
 vagrant ssh chefserver
 sudo -s
@@ -118,8 +120,9 @@ ls /vagrant/
 dpkg -i /vagrant/chef-server-core_XXXXXXXX.deb //install chef server software in chef server
 
 chef-server-ctl reconfigure
+
 chef-server-ctl user-create admin admin admin admin@example.com LearnDevops -f admin.pem
-chef-server-ctl org-create learndevops "Learn Devops Course" --association_user admin -f org.pem
+chef-server-ctl org-create learndevops "Learn Devops Course" --association_user admin -f org.pem //optional
 
 cp admin.pem org.pem /vagrant
 exit
@@ -144,21 +147,24 @@ cookbook_path            ["/home/vagrant/cookbooks"]
 
 cat .chef/knife.rb // to display all above commands - to verify
 
+
+
 knife ssl fetch
 knife client list // it will shows learndevops-validator
-knife bootstrap node.example.com -N node -x vagrant --sudo
+knife bootstrap node.example.com -N node -s -x vagrant --sudo  // it will ask vagrant password - enter "vagrant"
 
-// it will ask vagrant password - enter "vagrant"
+knife client list  //it will show node also
 
 cd cookbooks/
 ls
-knife cookbook upload my_cookbook
 
-knife node run_list set node 'recipe[my_cookbook]' //it will show node run list
+knife cookbook upload my_cookbook  //uploading my_cookbook to chefserver
+
+knife node run_list set node 'recipe[my_cookbook]' //it will show node run list and same uploaded to node run list
 ssh node 'sudo chef-client' //give yes and enter vagrant node password in vagrant node - "vagrant"
 
 Tenth Step
-Verify Now hello.txt is copied in node
+Verify Now hello.txt is copied in node /tmp folder
 
 
 
