@@ -151,7 +151,7 @@ cat .chef/knife.rb // to display all above commands - to verify
 
 knife ssl fetch
 knife client list // it will shows learndevops-validator
-knife bootstrap node.example.com -N node -s -x vagrant --sudo  // it will ask vagrant password - enter "vagrant"
+knife bootstrap node.example.com -N node -x vagrant --sudo  // it will ask vagrant password - enter "vagrant"
 
 knife client list  //it will show node also
 
